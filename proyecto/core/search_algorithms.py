@@ -33,14 +33,14 @@ def bfs(problem):
 # -------- DFS --------
 def dfs(problem):
     stack=[problem.start]
-    visited=set()
-    came_from={}
+    visited= set()
+    came_from = {}
 
     while stack:
-        node=stack.pop()
+        node = stack.pop()
 
         if problem.is_goal(node):
-            return reconstruct_path(came_from,node)
+            return reconstruct_path(came_from, node)
 
         if node in visited:
             continue
@@ -49,36 +49,54 @@ def dfs(problem):
 
         for n in problem.neighbors(node):
             if n not in visited:
-                came_from[n]=node
+                came_from[n] = node
                 stack.append(n)
     return None
 
 
 # -------- A* --------
-def heuristic(a,b):
-    return abs(a[0]-b[0])+abs(a[1]-b[1])
+def heuristic(a, b):
+    return abs(a[0]-b[0]) + abs(a[1]-b[1])
 
-def astar(problem):
-    goal=problem.goals[0]
+def astar(problem, img_array=None, color_model=None):
+    """
+    A* con soporte para costos dinámicos basados en colores.
+    
+    Args:
+        problem: instancia de MazeProblem
+        img_array: imagen original (opcional, para Task 2)
+        color_model: red neuronal entrenada (opcional, para Task 2)
+    
+    Returns:
+        lista de nodos representando el camino, o None si no hay solución
+    """
+    goal = problem.goals[0]
 
-    pq=[]
-    heapq.heappush(pq,(0,problem.start))
+    pq = []
+    heapq.heappush(pq, (0, problem.start))
 
-    came_from={}
-    cost={problem.start:0}
+    came_from = {}
+    cost = {problem.start: 0}
 
     while pq:
-        _,node=heapq.heappop(pq)
+        _, node = heapq.heappop(pq)
 
         if problem.is_goal(node):
-            return reconstruct_path(came_from,node)
+            return reconstruct_path(came_from, node)
 
         for n in problem.neighbors(node):
-            new_cost=cost[node]+1
+            # CAMBIO PRINCIPAL: Usar costo dinámico si hay modelo
+            if img_array is not None and color_model is not None:
+                step = problem.step_cost(node, n, img_array, color_model)
+            else:
+                step = 1  # Costo fijo (Task 1)
+            
+            new_cost = cost[node] + step
 
-            if n not in cost or new_cost<cost[n]:
-                cost[n]=new_cost
-                priority=new_cost+heuristic(n,goal)
-                heapq.heappush(pq,(priority,n))
-                came_from[n]=node
+            if n not in cost or new_cost < cost[n]:
+                cost[n] = new_cost
+                priority = new_cost + heuristic(n, goal)
+                heapq.heappush(pq, (priority, n))
+                came_from[n] = node
+    
     return None

@@ -7,7 +7,7 @@ TILE = 1
 
 def draw_path(img_array, path):
     
-    fig, ax = plt.subplots(figsize=(12, 12))
+    fig, ax = plt.subplots(figsize=(6,6))
     ax.imshow(img_array)
     ax.axis("off")
     
@@ -17,7 +17,7 @@ def draw_path(img_array, path):
         x_coords = [p[1] * TILE + TILE/2 for p in path] 
         
         ax.plot(x_coords, y_coords, 
-                color='cyan', 
+                color='yellow', 
                 linewidth=5, 
                 linestyle='-', 
                 alpha=0.8,
@@ -48,7 +48,7 @@ def draw_path(img_array, path):
     plt.title("Ruta encontrada por A* con costos de terreno", 
              fontsize=16, 
              fontweight='bold',
-             pad=20)
+             pad=10)
     
     # Agregar leyenda
     legend_elements = [
@@ -56,10 +56,10 @@ def draw_path(img_array, path):
         Patch(facecolor='lime', label='Meta'),
         Patch(facecolor='blue', label='Agua (costo 10)'),
         Patch(facecolor='gray', label='Pavimento (costo 1)'),
-        Patch(facecolor='cyan', edgecolor='black', linewidth=2, label='Ruta elegida'),
+        Patch(facecolor='yellow', edgecolor='black', linewidth=2, label='Ruta elegida'),
         Patch(facecolor='yellow', edgecolor='black', linewidth=2, label='Start/End')
     ]
-    plt.legend(handles=legend_elements, loc='upper right', fontsize=11, framealpha=0.9)
+    plt.legend(handles=legend_elements, loc='lower left', fontsize=8, framealpha=0.9)
     
     plt.tight_layout()
     plt.show()
